@@ -1,8 +1,8 @@
-# Repo Atlas
+# Repo Atlas App
 
 **Paste any public GitHub repo and watch it become a 3D city. Then let Claude, GPT and Gemini debate how good it is.**
 
-Repo Atlas is a single static web page. There is no backend, no build step and nothing to install.
+Repo Atlas App is a single static web page. There is no backend, no build step and nothing to install.
 
 - **3D city map.** Folders become districts and files become buildings. A taller building means a bigger file. Hover for details, click to fly to a file, switch the colouring between file type, size and depth, isolate a language, or search by path.
 - **Atlas score.** A quick 0-100 health check computed from the file tree and repo metadata: README, license, tests, CI, docs, contributing guide, recent activity and more. It is a heuristic, not a verdict on code quality.
@@ -36,7 +36,7 @@ Model names change often, so each one is an editable field. If a model name is r
 ### What happens to your keys and your data
 
 - Keys live in the page's memory and disappear when you refresh. You can opt in to remembering them in `localStorage` from the Settings tab.
-- Each key is sent only to its own provider, straight from your browser. There is no Repo Atlas server.
+- Each key is sent only to its own provider, straight from your browser. There is no Repo Atlas App server.
 - The page's Content-Security-Policy only allows connections to `api.github.com` and the three AI providers.
 - Repository text (file list, README excerpt, metadata) is sent to the AI providers when you convene the council. Do not point it at private code unless you are happy with that.
 - Everything in the repo, README and file names is treated as untrusted data in the prompts, and model output is rendered as plain text, never as HTML.
@@ -47,7 +47,7 @@ Without a token, GitHub allows 60 API requests per hour per IP, and each repo co
 
 ## Limits you should know about
 
-- Very large repos: GitHub truncates huge trees, and Repo Atlas draws at most the 12,000 largest files. A toast tells you when that happens.
+- Very large repos: GitHub truncates huge trees, and Repo Atlas App draws at most the 12,000 largest files. A toast tells you when that happens.
 - Building height is file size, not commit churn or complexity.
 - The Atlas score looks only at the file tree and metadata. It cannot judge the code itself.
 - Private repos need a GitHub token with access to them.

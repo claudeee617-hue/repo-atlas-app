@@ -1,5 +1,5 @@
 {
-  "name": "repo-atlas",
+  "name": "repo-atlas-app",
   "version": "0.1.0",
   "description": "Explore any GitHub repo as a 3D city and let an AI council of Claude, GPT and Gemini judge it.",
   "private": true,
