@@ -6,7 +6,7 @@ Repo Atlas is a single static web page. There is no backend, no build step and n
 
 - **3D city map.** Folders become districts and files become buildings. A taller building means a bigger file. Hover for details, click to fly to a file, switch the colouring between file type, size and depth, isolate a language, or search by path.
 - **Atlas score.** A quick 0-100 health check computed from the file tree and repo metadata: README, license, tests, CI, docs, contributing guide, recent activity and more. It is a heuristic, not a verdict on code quality.
-- **AI Council.** Up to three models review the repo from different angles (Claude as the Architect, GPT as the Skeptic, Gemini as the Mentor). They cross-examine each other's opinions, then a chair issues a verdict, a score and first steps for a newcomer. One key is enough, all three is better.
+- **AI Council.** Up to three models review the repo from different angles (Claude as the Architect, GPT as the Skeptic, Gemini as the Mentor). They cross-examine each other's opinions, then a chair issues a verdict, a score and first steps for a newcomer. One key is enough: that model plays all three roles (solo mode). With two or three keys, every seat uses its own model, which gives a real cross-model debate. Google's AI Studio offers a free Gemini key, so you can try the whole flow without paying.
 - **Share card.** One click makes a 1200x630 PNG with an isometric render of the repo, its score and the council's headline, plus ready-to-post text.
 - **Deep links.** Open `index.html?repo=owner/name` to load a repo directly.
 

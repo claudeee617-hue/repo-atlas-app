@@ -966,7 +966,7 @@ const PROVIDERS={
   }
 };
 async function callSeat(def,system,user,cancel){
-  const seat=state.seats[def.id];
+  const seat=state.seats[def.keyFrom||def.id];
   const ctrl=new AbortController(); const t=setTimeout(()=>ctrl.abort(),120000);
   const onAbort=()=>ctrl.abort(); cancel.addEventListener('abort',onAbort);
   try{ return await PROVIDERS[def.provider]({key:seat.key,model:seat.model},system,user,ctrl.signal); }
@@ -983,12 +983,14 @@ function refreshConvene(){
   btn.disabled=!(state.repo&&n&&!state.running);
   $('#stopBtn').hidden=!state.running;
   $('#councilHint').textContent=!state.repo?'Load a repo first, then convene the council.':!n?'Add at least one API key above to seat a model.':
-    n+' seat'+(n>1?'s':'')+' armed. Keys are sent only to their own provider.';
+    n===1?'1 seat armed: solo mode, that model plays all three roles. Add a second key for a real cross-model debate. Keys are sent only to their own provider.':
+    n+' seats armed. Keys are sent only to their own provider.';
   SEATS.forEach(s=>{
     const el=$('#seat-'+s.id+' .status'); if(!el) return;
     const st=state.seats[s.id], c=state.council;
     let txt=st.key.trim()?(st.enabled?'Ready':'Benched'):'No key yet';
-    if(c&&c.r1[s.id]){ const e=c.r1[s.id]; txt=e.status==='pending'?'Reading the repo…':e.status==='error'?'Failed in round 1':'Round 1 done'; }
+    if(c&&c.solo){ if(s.id===c.baseId) txt=state.running?'Playing all three roles…':'Played all three roles'; }
+    else if(c&&c.r1[s.id]){ const e=c.r1[s.id]; txt=e.status==='pending'?'Reading the repo…':e.status==='error'?'Failed in round 1':'Round 1 done'; }
     el.textContent=txt;
   });
 }
@@ -1011,10 +1013,13 @@ function buildSeats(){
   }
 }
 async function runCouncil(){
-  const seats=armed(); if(!seats.length||!state.repo||state.running) return;
+  let seats=armed(); if(!seats.length||!state.repo||state.running) return;
+  // Solo mode: with a single key, that one model plays all three roles. With two or three keys every seat uses its own model.
+  const solo=seats.length===1, base=seats[0];
+  if(solo) seats=SEATS.map(d=>({id:d.id,name:d.role,role:'played by '+base.name,color:d.color,persona:d.persona,provider:base.provider,keyFrom:base.id}));
   state.running=true; state.abort=new AbortController();
   const cancel=state.abort.signal;
-  const c=state.council={r1:{},r2:{},final:null,phase:'r1'};
+  const c=state.council={r1:{},r2:{},final:null,phase:'r1',defs:seats,solo,baseId:base.id};
   seats.forEach(s=>{ c.r1[s.id]={status:'pending'}; });
   refreshConvene(); renderResults();
   const ctx=buildContext({meta:state.meta,analysis:state.analysis,entries:state.entries,readme:state.readme});
@@ -1097,7 +1102,8 @@ function seatCard(def,e1,e2){
 function renderResults(){
   const box=$('#results'); box.replaceChildren(); const c=state.council;
   if(!c){ box.append(h('p',{class:'small muted'},'The verdict will appear here.')); return; }
-  const seats=SEATS.filter(s=>c.r1[s.id]);
+  const seats=(c.defs||SEATS).filter(s=>c.r1[s.id]);
+  if(c.solo) box.append(h('p',{class:'small muted'},'Solo mode: one key is armed, so one model plays all three roles. Add a second key for a real cross-model debate.'));
   box.append(h('div',{class:'rhead'},'Round 1 · Opening statements'),...seats.map(s=>seatCard(s,c.r1[s.id],null)));
   if(Object.keys(c.r2).length){
     box.append(h('div',{class:'rhead'},'Round 2 · Cross-examination'));
